@@ -2,7 +2,7 @@
 	"name": "project-switcher-branch",
 	"displayName": "Project Switcher with Branch",
 	"description": "Switch between projects in VS Code, with the current git branch shown next to each project",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"publisher": "mansoorkhan",
 	"license": "MIT",
 	"engines": {
@@ -19,6 +19,11 @@
 		"configuration": {
 			"title": "Project Switcher with Branch",
 			"properties": {
+				"project-switcher-branch.present": {
+					"type": "boolean",
+					"default": true,
+					"description": "Marker setting so user keybindings can fall back to the built-in window switcher when this extension is absent."
+				},
 				"project-switcher-branch.directory": {
 					"type": "string",
 					"default": null,
