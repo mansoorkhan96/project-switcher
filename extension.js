@@ -34,6 +34,7 @@ function activate(context) {
 		const sorted = Array.from(new Set(recent.concat(Object.keys(projects))));
 
 		const quickPick = vscode.window.createQuickPick();
+		quickPick.matchOnDescription = true;
 		quickPick.items = sorted.map((project) => {
 			const branch = getBranch(projects[project]);
 			return {
