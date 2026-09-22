@@ -1,64 +1,74 @@
 {
-	"name": "project-switcher-branch",
-	"displayName": "Project Switcher with Branch",
-	"description": "Switch between projects in VS Code, with the current git branch shown next to each project",
-	"version": "0.1.2",
-	"publisher": "mansoorkhan",
-	"license": "MIT",
-	"engines": {
-		"vscode": "^1.44.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"*"
-	],
-	"main": "./extension.js",
-	"contributes": {
-		"configuration": {
-			"title": "Project Switcher with Branch",
-			"properties": {
-				"project-switcher-branch.present": {
-					"type": "boolean",
-					"default": true,
-					"description": "Marker setting so user keybindings can fall back to the built-in window switcher when this extension is absent."
-				},
-				"project-switcher-branch.directory": {
-					"type": "string",
-					"default": null,
-					"description": "Your local projects directory to scan from. Defaults to the parent of the current workspace folder."
-				}
-			}
-		},
-		"commands": [
-			{
-				"command": "project-switcher-branch.switch",
-				"title": "Project Switcher: Switch Project"
-			}
-		],
-		"keybindings": [
-			{
-				"command": "project-switcher-branch.switch",
-				"key": "ctrl+;",
-				"mac": "cmd+;",
-				"when": "!inQuickOpen"
-			},
-			{
-				"command": "workbench.action.quickOpenNavigateNext",
-				"key": "ctrl+;",
-				"mac": "cmd+;",
-				"when": "inQuickOpen"
-			},
-			{
-				"command": "workbench.action.quickOpenNavigatePrevious",
-				"key": "ctrl+shift+;",
-				"mac": "cmd+shift+;",
-				"when": "inQuickOpen"
-			}
-		]
-	},
-	"scripts": {
-		"package": "vsce package"
-	}
+    "name": "project-switcher",
+    "displayName": "Project Switcher",
+    "description": "Switch between projects in VS Code, with the current git branch shown next to each project",
+    "version": "0.1.3",
+    "publisher": "mansoorkhan96",
+    "license": "MIT",
+    "engines": {
+        "vscode": "^1.44.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mansoorkhan96/project-switcher"
+    },
+    "categories": [
+        "Other"
+    ],
+    "keywords": [
+        "project",
+        "switcher",
+        "git",
+        "branch"
+    ],
+    "activationEvents": [
+        "*"
+    ],
+    "main": "./extension.js",
+    "contributes": {
+        "configuration": {
+            "title": "Project Switcher",
+            "properties": {
+                "project-switcher.present": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Marker setting so user keybindings can fall back to the built-in window switcher when this extension is absent."
+                },
+                "project-switcher.directory": {
+                    "type": "string",
+                    "default": null,
+                    "description": "Your local projects directory to scan from. Defaults to the parent of the current workspace folder."
+                }
+            }
+        },
+        "commands": [
+            {
+                "command": "project-switcher.switch",
+                "title": "Project Switcher: Switch Project"
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "project-switcher.switch",
+                "key": "ctrl+;",
+                "mac": "cmd+;",
+                "when": "!inQuickOpen"
+            },
+            {
+                "command": "workbench.action.quickOpenNavigateNext",
+                "key": "ctrl+;",
+                "mac": "cmd+;",
+                "when": "inQuickOpen"
+            },
+            {
+                "command": "workbench.action.quickOpenNavigatePrevious",
+                "key": "ctrl+shift+;",
+                "mac": "cmd+shift+;",
+                "when": "inQuickOpen"
+            }
+        ]
+    },
+    "scripts": {
+        "package": "vsce package"
+    }
 }

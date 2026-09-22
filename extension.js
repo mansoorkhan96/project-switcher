@@ -8,7 +8,7 @@ function activate(context) {
 	if (!vscode.workspace.workspaceFolders) return;
 
 	const projectsFolder = normalizePath(
-		config('project-switcher-branch.directory',
+		config('project-switcher.directory',
 			normalizePath(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, '..')))
 	);
 
@@ -22,16 +22,18 @@ function activate(context) {
 		if (event.focused) updateMostRecentProject(context, currentProject);
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('project-switcher-branch.switch', () => {
+	context.subscriptions.push(vscode.commands.registerCommand('project-switcher.switch', () => {
 		if (!vscode.workspace.workspaceFolders) {
 			vscode.window.showErrorMessage('Project Switcher requires at least one folder to be open.');
 			return;
 		}
 
 		const projects = getProjectsFromDirectory(projectsFolder);
-		const recent = context.globalState.get('project-switcher-branch.recent', [])
+		const recent = context.globalState.get('project-switcher.recent', [])
 			.filter((name) => name in projects);
-		const sorted = Array.from(new Set(recent.concat(Object.keys(projects))));
+		const byActivity = Object.keys(projects)
+			.sort((a, b) => getLastWorkedAt(projects[b]) - getLastWorkedAt(projects[a]));
+		const sorted = Array.from(new Set(recent.concat(byActivity)));
 
 		const quickPick = vscode.window.createQuickPick();
 		quickPick.matchOnDescription = true;
@@ -75,6 +77,32 @@ function getProjectsFromDirectory(projectsFolder) {
 	return projects;
 }
 
+function getLastWorkedAt(projectPath) {
+	// Newest of .git/index and .git/HEAD — touched on every commit, checkout,
+	// or stage, so it tracks real work even from a terminal or another editor.
+	try {
+		let gitPath = path.join(projectPath, '.git');
+		if (fs.lstatSync(gitPath).isFile()) {
+			const match = fs.readFileSync(gitPath, 'utf8').match(/^gitdir:\s*(.+)\s*$/m);
+			if (match) gitPath = path.resolve(projectPath, match[1]);
+		}
+
+		return Math.max(...['index', 'HEAD'].map((file) => {
+			try {
+				return fs.statSync(path.join(gitPath, file)).mtimeMs;
+			} catch {
+				return 0;
+			}
+		}));
+	} catch {
+		try {
+			return fs.statSync(projectPath).mtimeMs;
+		} catch {
+			return 0;
+		}
+	}
+}
+
 function getBranch(projectPath) {
 	try {
 		let gitPath = path.join(projectPath, '.git');
@@ -100,9 +128,9 @@ function getBranch(projectPath) {
 
 function updateMostRecentProject(context, currentProject) {
 	currentProject = normalizePath(currentProject);
-	const recent = context.globalState.get('project-switcher-branch.recent', []);
+	const recent = context.globalState.get('project-switcher.recent', []);
 	recent.unshift(currentProject);
-	context.globalState.update('project-switcher-branch.recent', Array.from(new Set(recent)));
+	context.globalState.update('project-switcher.recent', Array.from(new Set(recent)));
 }
 
 function config(setting, fallback) {
